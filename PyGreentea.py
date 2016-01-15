@@ -357,18 +357,17 @@ class TrainingSetGenerator:
         # and then store the two variables separately
         self.data_arrays = [None for x in range(len(data_arrays))]
         self.label_arrays = [None for x in range(len(data_arrays))]
-        init_data_and_target()
+
+        for x in range(len(data_arrays)):
+            # Applies noise to a stack of images, and stores in this variable
+            self.data_arrays[x], self.label_arrays[x] = applyInterpolatedNoiseToStack(data_arrays[x]['data'], data_arrays[x]['label'])
 
         self.data_sizes = data_sizes
         self.label_sizes = label_sizes
         self.input_padding = input_padding
         self.thread = None
 
-    def init_data_and_target(self, data_arrays):
-        for x in range(len(self.data_array)):
-            # Applies noise to a stack of images, and stores in this variable
-            self.data_arrays[x], self.label_arrays[x] = applyInterpolatedNoiseToStack(data_arrays[x]['data'], data_arrays[x]['label'])
-
+        
     def run_generate_training(self, iteration):
         global data_slices, label_slices, data_offsets
         data_slices = None
