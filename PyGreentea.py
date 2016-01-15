@@ -377,7 +377,7 @@ class TrainingSetGenerator:
         caffe.select_device(4, False)
 
         # We will need to modify this to include more than just one data_array (more than one training file)
-        data_slices, label_slices, offsets = getSampleVolumes(self.data_arrays[0], self.label_arrays[0], self.input_padding, data_sizes, label_sizes, num_samples=100)
+        data_slices, label_slices, offsets = getSampleVolumes(self.data_arrays[0], self.label_arrays[0], self.input_padding, self.data_sizes, self.label_sizes, num_samples=100)
 
         # # Loop through all input files
         # for i in range(0, len(data_arrays)):
@@ -470,7 +470,7 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
 
         # if (options.augment_training and i % options.augment_interval == 0):
         if (i % 100 == 0):
-            training_set.generate_training()
+            training_set.generate_training(i)
 
         slice_iter = i % 100
         
