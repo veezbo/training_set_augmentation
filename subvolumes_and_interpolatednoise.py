@@ -51,7 +51,7 @@ def bilinear_interpolate(im, x, y):
 # Input: 1. Image to apply smooth (cubic interpolated) noise, recovered using bilinear interpolat
 #        2. Image to apply 
 # Output: Image after noise addition
-def applyInterpolatedNoise(image, target, noise_factor=10, stride=256):
+def applyInterpolatedNoise(image, targets, noise_factor=10, stride=256):
 
     size = image.shape[0]
 
@@ -75,15 +75,30 @@ def applyInterpolatedNoise(image, target, noise_factor=10, stride=256):
     x_jitter = grid_x + noise_x
     y_jitter = grid_y + noise_y
 
-    return bilinear_interpolate(image, x_jitter, y_jitter), lookupNearest(target, x_jitter, y_jitter)
+    labels = [None for t in range(targets.shape[0])]
+    for t in range(targets.shape[0]):
+        labels[target] = lookupNearest(targets[t, :, :], x_jitter, y_jitter)
+
+    return bilinear_interpolate(image, x_jitter, y_jitter), labels
 
 def applyInterpolatedNoiseToStack(images, targets, noise_factor=10, stride=256):
 
-    num_images = len(images)
-    data_noises = [None for x in range(num_images)]
-    label_noises = [None for x in range(num_images)]
-    for s in range(len(images)):
-        data_noise[s], label_noise[s] = applyInterpolatedNoise(images[s], target[s])
+    data_stack, data_col, data_row = images[0].shape
+    num_labels, label_stack, label_col, label_row = targets.shape
+
+    data_noises = np.zeros([0, data_stack, data_col, data_row])
+    label_noises = np.zeros([num_labels, label_stack, label_col, label_row])
+
+    # data_noises = [None for x in range(num_images)]
+    # label_noises = [None for x in range(num_images)]
+
+    for s in range(data_stack):
+        data_noises[0, s, :, :], labels = applyInterpolatedNoise(images[0, s, :, :], targets[:, s, :, :])
+        for n in range(num_labels):
+            label_noises[n, s, :, :] = labels[n]
+        
+    # for s in range(len(images)):
+    #     data_noise[s], label_noise[s] = applyInterpolatedNoise(images[s], targets[s])
 
     return data_noises, label_noises
 
