@@ -6,7 +6,7 @@ import math
 import multiprocessing
 import threading
 from Crypto.Random.random import randint
-from subvolumes_and_interpolatednoise.py import getSampleVolumes, applyInterpolatedNoiseToStack
+from subvolumes_and_interpolatednoise import getSampleVolumes, applyInterpolatedNoiseToStack
 
 
 # Determine where PyGreentea is
@@ -430,10 +430,6 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
     test_eval = None
     if (options.test_net != None):
         test_eval = TestNetEvaluator(test_net, net, train_data_arrays, options)
-
-    training_augment = None
-    # if (options.augment_training):
-    training_set = TrainingSetGenerator(data_arrays, options)
     
     input_dims, output_dims, input_padding = get_spatial_io_dims(net)
     fmaps_in, fmaps_out = get_fmap_io_dims(net)
@@ -461,6 +457,12 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
     
     data_sizes = [fmaps_in]+[output_dims[di] + input_padding[di] for di in range(0, dims)]
     label_sizes = [fmaps_out] + output_dims
+
+    training_set = None
+    # if (options.augment_training):
+    #  def __init__(self, data_arrays, options, data_sizes, label_sizes, input_padding):
+    training_set = TrainingSetGenerator(data_arrays, options, data_sizes, label_sizes, input_padding)
+
     # Loop from current iteration to last iteration
     for i in range(solver.iter, solver.max_iter):
         
