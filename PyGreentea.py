@@ -349,7 +349,7 @@ data_slices = None
 label_slices = None
 data_offsets = None
 
- class TrainingSetGenerator:
+class TrainingSetGenerator:
 
     def __init__(self, data_arrays, options, data_sizes, label_sizes, input_padding):
         self.options = options
