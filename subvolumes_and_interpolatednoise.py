@@ -4,7 +4,6 @@ import numpy as np
 from PIL import Image
 from scipy import interpolate
 from random import randint
-from libtiff import TIFF
 
 
 # Use efficient nearest-neighbor interpolation to reciver an image from coordinates. Used to distort labels of training data.
@@ -259,20 +258,20 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, t
     return data_samples, label_samples, offsets
 
 
-# Testing code
-tif = TIFF.open('validate_raw_raw.tif', mode='r')
+# # Testing code
+# tif = TIFF.open('validate_raw_raw.tif', mode='r')
 
-image_stack = []
-for image in tif.iter_images():
-    image_stack.append(image)
-tif.close()
+# image_stack = []
+# for image in tif.iter_images():
+#     image_stack.append(image)
+# tif.close()
 
-tif = TIFF.open('validate_target.tif', mode='r')
+# tif = TIFF.open('validate_target.tif', mode='r')
 
-target_stack = []
-for image in tif.iter_images():
-    target_stack.append(image)
-tif.close()
+# target_stack = []
+# for image in tif.iter_images():
+#     target_stack.append(image)
+# tif.close()
 
-outputSampleVolumes(image_stack, target_stack, [256, 256], 2, 5)
+# outputSampleVolumes(image_stack, target_stack, [256, 256], 2, 5)
 
