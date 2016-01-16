@@ -501,7 +501,7 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
                 print "Compare sizes of label_slices: {0} and {1}".format(label_slice_old.shape, label_slice.shape)
                 
             if ('components' in data_arrays[dataset]):
-                components_slice = slice_data(data_arrays[dataset]['components'][0,:], [data_offsets[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], output_dims)
+                components_slice = slice_data(data_arrays[dataset]['components'][0,:], [data_offsets[slice_iter][di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], output_dims)
                 if (label_slice is None or options.recompute_affinity):
                     label_slice = malis.seg_to_affgraph(components_slice, data_arrays[dataset]['nhood']).astype(float32)
             
