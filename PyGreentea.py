@@ -377,6 +377,7 @@ class TrainingSetGenerator:
         # caffe.select_device(self.options.augment_device, False)
         caffe.select_device(4, False)
 
+        print "Shapes of data and label arrays: ", self.data_arrays[9].shape, self.label_arrays[0].shape
         # We will need to modify this to include more than just one data_array (more than one training file)
         data_slices, label_slices, data_offsets = getSampleVolumes(self.data_arrays[0], self.label_arrays[0], self.input_padding, self.data_sizes, self.label_sizes, num_samples=2)
 
