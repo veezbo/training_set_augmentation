@@ -369,6 +369,7 @@ class TrainingSetGenerator:
 
         
     def run_generate_training(self, iteration):
+        print "Generating the training files"
         global data_slices, label_slices, data_offsets
         data_slices = None
         label_slices = None
@@ -378,6 +379,8 @@ class TrainingSetGenerator:
 
         # We will need to modify this to include more than just one data_array (more than one training file)
         data_slices, label_slices, offsets = getSampleVolumes(self.data_arrays[0], self.label_arrays[0], self.input_padding, self.data_sizes, self.label_sizes, num_samples=100)
+
+        print "Done generating the training files"
 
         # # Loop through all input files
         # for i in range(0, len(data_arrays)):
@@ -470,7 +473,7 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
 
         # if (options.augment_training and i % options.augment_interval == 0):
         if (i % 100 == 0):
-            training_set.generate_training(i)
+            training_set.run_generate_training(i)
 
         slice_iter = i % 100
         
@@ -482,16 +485,20 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
             offsets.append(randint(0, data_arrays[dataset]['data'].shape[1+j] - (output_dims[j] + input_padding[j])))
                 
         # These are the raw data elements
-        # data_slice = slice_data(data_arrays[dataset]['data'], [0]+offsets, data_sizes)
+        data_slice_old = slice_data(data_arrays[dataset]['data'], [0]+offsets, data_sizes)
         data_slice = data_slices[slice_iter]
+
+        print "Compare sizes of data_slices: {0} and {1}".format(data_slice_old.shape, data_slice.shape)
 
         label_slice = None
         components_slice = None
 
         if (options.training_method == 'affinity'):
             if ('label' in data_arrays[dataset]):
-                # label_slice = slice_data(data_arrays[dataset]['label'], [0] + [offsets[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], label_sizes)
+                label_slice_old = slice_data(data_arrays[dataset]['label'], [0] + [offsets[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], label_sizes)
                 label_slice = label_slices[slice_iter]
+
+                print "Compare sizes of label_slices: {0} and {1}".format(label_slice_old.shape, label_slice.shape)
                 
             if ('components' in data_arrays[dataset]):
                 components_slice = slice_data(data_arrays[dataset]['components'][0,:], [data_offsets[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], output_dims)
