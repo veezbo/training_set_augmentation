@@ -261,7 +261,7 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, l
             # if arePointsInside(data_dim, getFourCorners(data_offset[1:], data_patchsize[1:]), angle) and arePointsInside(label_dim, getFourCorners(label_offset[1:], label_patchsize[1:]), angle):
             if arePointsInside(data_dim, getFourCorners(data_offset[1:], data_patchsize[1:]), angle):
                 # Get patches of volume based on offsets and sizes of volumes
-                data_patch = rot_ims[0, data_offset[0]:data_offset[0]+data_patchsize[0], data_offset[1]:data_offset[1]+data_patchsize[1], data_offset[2]:data_offset[2]+data_patchsize[2]]
+                data_patch = rot_ims[:, data_offset[0]:data_offset[0]+data_patchsize[0], data_offset[1]:data_offset[1]+data_patchsize[1], data_offset[2]:data_offset[2]+data_patchsize[2]]
                 label_patch = rot_targs[:, label_offset[0]:label_offset[0]+label_patchsize[0], label_offset[1]:label_offset[1]+label_patchsize[1], label_offset[2]:label_offset[2]+label_patchsize[2]]
 
                 data_samples[i] = data_patch
