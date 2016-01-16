@@ -238,23 +238,23 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, t
     # Loop through random angles, generating rotated versions of the images
     for i in range(num_samples):
 
-        rot_ims = np.zeros([1, data_stack_size, data_rows, data_cols])
+        rot_ims = np.zeros([1, data_stack, data_rows, data_cols])
         rot_targs = np.zeros([num_labels, label_stack, label_rows, label_cols])
 
         angle = randint(0, 359)
         M = cv2.getRotationMatrix2D((data_rows/2,data_cols/2),angle,1)
 
         for s in range(data_stack):
-            rot_ims[0, s, :, :] = cv2.warpAffine(image_stack[0, s, :, :], M, data_dim)
+            rot_ims[0, s, :, :] = cv2.warpAffine(image_stack[0, s, :, :], M, (data_cols, data_rows))
             # rot_targs[s] = [cv2.warpAffine(target_stack[0, s, :, :], M, data_dim)]
             for n in range(num_labels):
-                rot_targs[n, s, :, :] = cv2.warpAffine(target_stack[n, s, :, :], M, data_dim)
+                rot_targs[n, s, :, :] = cv2.warpAffine(target_stack[n, s, :, :], M, (data_cols, data_rows))
 
         # Loop through until we find offsets that work
         while True:
 
-            data_offset = [randint(0, stack_size - data_patchsize[0]), randint(0, data_cols - data_patchsize[1] - 1), randint(0, data_rows - data_patchsize[2] - 1)]
-            label_offset = [data_offset[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)]
+            data_offset = [randint(0, data_stack - data_patchsize[0]), randint(0, data_cols - data_patchsize[1] - 1), randint(0, data_rows - data_patchsize[2] - 1)]
+            label_offset = [data_offset[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, len(input_padding))]
 
             # If data patch is within data size and label patch is within label size, then we have valid offsets
             # NOTE: may not need to check for label patch, since it will be smaller (and centered at data patch, at least it should be)
