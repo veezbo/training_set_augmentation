@@ -210,12 +210,12 @@ def outputSampleVolumes(image_stack, target_stack, sub_dim, num_angles=10, num_s
 # Input: 
 #        1. image_stack: Image stack, as a list of numpy arrays
 #        2. data_patchsize: the dimensions of the desired sub-volumes in the raw data
-#        3. target_patchsize: the dimensions of the desired sub-volumes in the target data
+#        3. label_patchsize: the dimensions of the desired sub-volumes in the target data
 #        4. num_angles: the nunber of random angles to generate subvolumes for
 #        5. num_samples: the number of samples to get from each angle
 # Output:
 #        Returns the data images, label images, and all the offsets used in the data
-def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, target_patchsize, num_samples):
+def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, label_patchsize, num_samples):
 
     data_stack, data_rows, data_cols = image_stack[0].shape
     data_dim = [data_rows, data_cols]
