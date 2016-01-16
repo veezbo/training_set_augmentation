@@ -1,4 +1,4 @@
-from math import sin, cos
+from math import sin, cos, ceil
 import cv2
 import numpy as np
 from PIL import Image
@@ -254,7 +254,7 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, t
         while True:
 
             data_offset = [randint(0, data_stack - data_patchsize[0]), randint(0, data_cols - data_patchsize[1] - 1), randint(0, data_rows - data_patchsize[2] - 1)]
-            label_offset = [data_offset[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, len(input_padding))]
+            label_offset = [data_offset[di] + int(ceil(input_padding[di] / float(2))) for di in range(0, len(input_padding))]
 
             # If data patch is within data size and label patch is within label size, then we have valid offsets
             # NOTE: may not need to check for label patch, since it will be smaller (and centered at data patch, at least it should be)
