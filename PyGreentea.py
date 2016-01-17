@@ -511,7 +511,7 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
                 components_slice,ccSizes = malis.connected_components_affgraph(label_slice.astype(int32), data_arrays[dataset]['nhood'])
 
         else:
-            # label_slice = slice_data(data_arrays[dataset]['label'], [0] + [offsets[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], [fmaps_out] + output_dims)
+            label_slice_old = slice_data(data_arrays[dataset]['label'], [0] + [offsets[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], [fmaps_out] + output_dims)
             label_slice = label_slices[slice_iter]
 
 
