@@ -370,7 +370,7 @@ class TrainingSetGenerator:
         self.thread = None
 
         
-    def run_generate_training(self, iteration):
+    def run_generate_training(self):
 
         global data_slices, label_slices, data_offsets
         # TODO: Add this option to caffe options and use that, rather than 4 arbitrarily
