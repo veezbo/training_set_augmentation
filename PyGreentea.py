@@ -7,6 +7,7 @@ import multiprocessing
 import threading
 from Crypto.Random.random import randint
 from subvolumes_and_interpolatednoise import getSampleVolume, applyInterpolatedNoiseToStack
+import Queue
 
 
 # Determine where PyGreentea is
@@ -345,9 +346,9 @@ class TestNetEvaluator:
         self.thread = threading.Thread(target=self.run_test, args=[iteration])
         self.thread.start()
 
-data_slices = Queue()
-label_slices = Queue()
-data_offsets = Queue()
+data_slices = Queue.Queue()
+label_slices = Queue.Queue()
+data_offsets = Queue.Queue()
 
 class TrainingSetGenerator:
 
