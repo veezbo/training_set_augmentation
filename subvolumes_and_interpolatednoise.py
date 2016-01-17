@@ -266,8 +266,8 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, l
                 data_patch = rot_ims[:, data_offset[0]:data_offset[0]+data_patchsize[1], data_offset[1]:data_offset[1]+data_patchsize[2], data_offset[2]:data_offset[2]+data_patchsize[3]]
                 label_patch = rot_targs[:, label_offset[0]:label_offset[0]+label_patchsize[1], label_offset[1]:label_offset[1]+label_patchsize[2], label_offset[2]:label_offset[2]+label_patchsize[3]]
 
-                cv2.imwrite('output_data_rot{0}.tif'.format(angle), data_patch[0,:,:])
-                cv2.imwrite('output_label_rot{0}.tif'.format(angle), label_patch[0,:,:])
+                cv2.imwrite('output_data_rot{0}.tif'.format(angle), data_patch[0,0,:,:])
+                cv2.imwrite('output_label_rot{0}.tif'.format(angle), label_patch[0,0,:,:])
                 cv2.imwrite('input_data_rot{0}.tif'.format(angle), image_stack[0,data_offset[0],:,:])
                 cv2.imwrite('input_label_rot{0}.tif'.format(angle), target_stack[0,label_offset[0],:,:])
                 exit()
