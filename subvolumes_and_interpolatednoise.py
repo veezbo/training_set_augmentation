@@ -256,10 +256,12 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, l
             data_offset = [randint(0, data_stack - data_patchsize[0]), randint(0, data_cols - data_patchsize[1] - 1), randint(0, data_rows - data_patchsize[2] - 1)]
             label_offset = [data_offset[di] + int(ceil(input_padding[di] / float(2))) for di in range(0, len(input_padding))]
 
+            print "Data offset and patchsize: ", data_offset, data_patchsize
+            print "Label offset and patchsize: ", label_offset, label_patchsize
             # If data patch is within data size and label patch is within label size, then we have valid offsets
             # NOTE: should not need to check for label patch, since it will be smaller (and centered at data patch, at least it should be)
             # if arePointsInside(data_dim, getFourCorners(data_offset[1:], data_patchsize[1:]), angle) and arePointsInside(label_dim, getFourCorners(label_offset[1:], label_patchsize[1:]), angle):
-            if arePointsInside(data_dim, getFourCorners(data_offset[1:], data_patchsize[1:]), angle):
+            if arePointsInside(data_dim, getFourCorners(data_offset[2:], data_patchsize[2:]), angle):
                 # Get patches of volume based on offsets and sizes of volumes
                 data_patch = rot_ims[:, data_offset[0]:data_offset[0]+data_patchsize[0], data_offset[1]:data_offset[1]+data_patchsize[1], data_offset[2]:data_offset[2]+data_patchsize[2]]
                 label_patch = rot_targs[:, label_offset[0]:label_offset[0]+label_patchsize[0], label_offset[1]:label_offset[1]+label_patchsize[1], label_offset[2]:label_offset[2]+label_patchsize[2]]
