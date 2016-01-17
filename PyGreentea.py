@@ -495,7 +495,7 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
                 label_slice_old = slice_data(data_arrays[dataset]['label'], [0] + [offsets[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], label_sizes)
                 label_slice = label_slices.get()
 
-                print "Compare sizes of label_slices: {0} and {1}".format(label_slice_old.shape, label_slice.shape)
+                # print "Compare sizes of label_slices: {0} and {1}".format(label_slice_old.shape, label_slice.shape)
                 
             if ('components' in data_arrays[dataset]):
                 data_offset = data_offsets.get()
