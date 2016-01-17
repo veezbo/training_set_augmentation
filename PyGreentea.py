@@ -6,7 +6,7 @@ import math
 import multiprocessing
 import threading
 from Crypto.Random.random import randint
-from subvolumes_and_interpolatednoise import getSampleVolumes, applyInterpolatedNoiseToStack
+from subvolumes_and_interpolatednoise import getSampleVolume, applyInterpolatedNoiseToStack
 
 
 # Determine where PyGreentea is
@@ -345,9 +345,9 @@ class TestNetEvaluator:
         self.thread = threading.Thread(target=self.run_test, args=[iteration])
         self.thread.start()
 
-data_slices = None
-label_slices = None
-data_offsets = None
+data_slices = Queue()
+label_slices = Queue()
+data_offsets = Queue()
 
 class TrainingSetGenerator:
 
@@ -358,6 +358,7 @@ class TrainingSetGenerator:
         self.data_arrays = [None for x in range(len(data_arrays))]
         self.label_arrays = [None for x in range(len(data_arrays))]
 
+        # TODO: Need to apply noise at a certain interval
         for x in range(len(data_arrays)):
             # Applies noise to a stack of images, and stores in this variable
             self.data_arrays[x], self.label_arrays[x] = applyInterpolatedNoiseToStack(data_arrays[x]['data'], data_arrays[x]['label'])
@@ -369,20 +370,34 @@ class TrainingSetGenerator:
 
         
     def run_generate_training(self, iteration):
+
         print "Generating the training files"
         global data_slices, label_slices, data_offsets
-        data_slices = None
-        label_slices = None
-        data_offsets = None
+        # data_slices = None
+        # label_slices = None
+        # data_offsets = None
         # caffe.select_device(self.options.augment_device, False)
         caffe.select_device(4, False)
 
         print "Shapes of data and label arrays: ", self.data_arrays[0].shape, self.label_arrays[0].shape
         print "Data and label sizes: ", self.data_sizes, self.label_sizes
-        # We will need to modify this to include more than just one data_array (more than one training file)
-        data_slices, label_slices, data_offsets = getSampleVolumes(self.data_arrays[0], self.label_arrays[0], self.input_padding, self.data_sizes, self.label_sizes, num_samples=2)
+        
+        training_it = 0
+        while True:
 
-        print "Done generating the training files"
+            if data_slices.qsize() > 10:
+                continue
+
+            print "Generating Training Point #{0}".format(training_it)
+            training_it += 1
+            # We will need to modify this to include more than just one data_array (more than one training file)
+            data_slice, label_slice, data_offset = getSampleVolume(self.data_arrays[0], self.label_arrays[0], self.input_padding, self.data_sizes, self.label_sizes)
+            data_slices.put(data_slice)
+            label_slices.put(label_slice)
+            data_offsets.put(data_offset)
+
+        
+        # print "Done generating the training files"
 
         # # Loop through all input files
         # for i in range(0, len(data_arrays)):
@@ -462,10 +477,11 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
     data_sizes = [fmaps_in]+[output_dims[di] + input_padding[di] for di in range(0, dims)]
     label_sizes = [fmaps_out] + output_dims
 
-    training_set = None
+    # training_set = None
     # if (options.augment_training):
     #  def __init__(self, data_arrays, options, data_sizes, label_sizes, input_padding):
     training_set = TrainingSetGenerator(data_arrays, options, data_sizes, label_sizes, input_padding)
+    training_set.generate_training(0)
 
     # Loop from current iteration to last iteration
     for i in range(solver.iter, solver.max_iter):
@@ -474,10 +490,10 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
             test_eval.evaluate(i)
 
         # if (options.augment_training and i % options.augment_interval == 0):
-        if (i % 2 == 0):
-            training_set.generate_training(i)
+        # if (i % 2 == 0):
+        #     training_set.generate_training(i)
 
-        slice_iter = i % 2
+        # slice_iter = i % 2
         
         # First pick the dataset to train with
         dataset = randint(0, len(data_arrays) - 1)
@@ -488,7 +504,8 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
                 
         # These are the raw data elements
         data_slice_old = slice_data(data_arrays[dataset]['data'], [0]+offsets, data_sizes)
-        data_slice = data_slices[slice_iter]
+        # data_slice = data_slices[slice_iter]
+        data_slice = data_slices.get()
 
         print "Compare sizes of data_slices: {0} and {1}".format(data_slice_old.shape, data_slice.shape)
 
@@ -498,7 +515,8 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
         if (options.training_method == 'affinity'):
             if ('label' in data_arrays[dataset]):
                 label_slice_old = slice_data(data_arrays[dataset]['label'], [0] + [offsets[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], label_sizes)
-                label_slice = label_slices[slice_iter]
+                # label_slice = label_slices[slice_iter]
+                label_slice = label_slices.get()
 
                 print "Compare sizes of label_slices: {0} and {1}".format(label_slice_old.shape, label_slice.shape)
                 
@@ -512,7 +530,8 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
 
         else:
             label_slice_old = slice_data(data_arrays[dataset]['label'], [0] + [offsets[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], [fmaps_out] + output_dims)
-            label_slice = label_slices[slice_iter]
+            # label_slice = label_slices[slice_iter]
+            label_slice = label_slices.get()
 
 
         if options.loss_function == 'malis':

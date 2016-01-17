@@ -280,6 +280,8 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, l
 
     return data_samples, label_samples, offsets
 
+def getSampleVolume(image_stack, target_stack, input_padding, data_patchsize, label_patchsize):
+    return getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, label_patchsize, 1)
 
 # # Testing code
 # tif = TIFF.open('validate_raw_raw.tif', mode='r')
