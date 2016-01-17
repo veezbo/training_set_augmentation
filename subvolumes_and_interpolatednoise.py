@@ -217,7 +217,7 @@ def outputSampleVolumes(image_stack, target_stack, sub_dim, num_angles=10, num_s
 #        Returns the data images, label images, and all the offsets used in the data
 def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, label_patchsize, num_samples):
 
-    data_stack, data_rows, data_cols = image_stack[0].shape
+    num_data, data_stack, data_rows, data_cols = image_stack.shape
     data_dim = [data_rows, data_cols]
 
     num_labels, label_stack, label_rows, label_cols = target_stack.shape
@@ -257,7 +257,7 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, l
             label_offset = [data_offset[di] + int(ceil(input_padding[di] / float(2))) for di in range(0, len(input_padding))]
 
             # If data patch is within data size and label patch is within label size, then we have valid offsets
-            # NOTE: may not need to check for label patch, since it will be smaller (and centered at data patch, at least it should be)
+            # NOTE: should not need to check for label patch, since it will be smaller (and centered at data patch, at least it should be)
             # if arePointsInside(data_dim, getFourCorners(data_offset[1:], data_patchsize[1:]), angle) and arePointsInside(label_dim, getFourCorners(label_offset[1:], label_patchsize[1:]), angle):
             if arePointsInside(data_dim, getFourCorners(data_offset[1:], data_patchsize[1:]), angle):
                 # Get patches of volume based on offsets and sizes of volumes
