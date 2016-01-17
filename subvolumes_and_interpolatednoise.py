@@ -232,6 +232,7 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, l
     label_samples = [None for x in range(num_samples)]
     offsets = [None for x in range(num_samples)]
 
+
     # Assume all the images already have noise (applyInterpolatedNoise should have been called already)
 
 
@@ -266,6 +267,7 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, l
                 data_patch = rot_ims[:, data_offset[0]:data_offset[0]+data_patchsize[1], data_offset[1]:data_offset[1]+data_patchsize[2], data_offset[2]:data_offset[2]+data_patchsize[3]]
                 label_patch = rot_targs[:, label_offset[0]:label_offset[0]+label_patchsize[1], label_offset[1]:label_offset[1]+label_patchsize[2], label_offset[2]:label_offset[2]+label_patchsize[3]]
 
+                # Test outputs of this program
                 # cv2.imwrite('../../training_set_augmentation/test_outputs/output_data_rot{0}.tif'.format(angle), data_patch[0,0,:,:])
                 # cv2.imwrite('../../training_set_augmentation/test_outputs/output_label_rot{0}.tif'.format(angle), label_patch[0,0,:,:])
                 # cv2.imwrite('../../training_set_augmentation/test_outputs/input_data_rot{0}.tif'.format(angle), image_stack[0,data_offset[0],:,:])
@@ -283,7 +285,7 @@ def getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, l
 def getSampleVolume(image_stack, target_stack, input_padding, data_patchsize, label_patchsize):
     data_samples, label_samples, offsets = getSampleVolumes(image_stack, target_stack, input_padding, data_patchsize, label_patchsize, 1)
     return data_samples[0], label_samples[0], offsets[0]
-    
+
 # # Testing code
 # tif = TIFF.open('validate_raw_raw.tif', mode='r')
 
