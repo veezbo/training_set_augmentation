@@ -475,7 +475,7 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
 
         # if (options.augment_training and i % options.augment_interval == 0):
         if (i % 2 == 0):
-            training_set.run_generate_training(i)
+            training_set.generate_training(i)
 
         slice_iter = i % 2
         
