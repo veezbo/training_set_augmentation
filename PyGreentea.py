@@ -389,8 +389,8 @@ class TrainingSetGenerator:
             print "Generating Training Point #{0}".format(training_it)
             training_it += 1
 
-            # TODO: We will need to modify this to include more than just one data_array (more than one training file)
-            data_slice, label_slice, data_offset = getSampleVolume(self.data_arrays[0], self.label_arrays[0], self.input_padding, self.data_sizes, self.label_sizes)
+            dataset = randint(0, len(data_arrays)-1)
+            data_slice, label_slice, data_offset = getSampleVolume(self.data_arrays[dataset], self.label_arrays[dataset], self.input_padding, self.data_sizes, self.label_sizes)
             data_slices.put(data_slice)
             label_slices.put(label_slice)
             data_offsets.put(data_offset)
@@ -496,7 +496,8 @@ def train(solver, test_net, data_arrays, train_data_arrays, options):
                 label_slice = label_slices.get()
 
                 # print "Compare sizes of label_slices: {0} and {1}".format(label_slice_old.shape, label_slice.shape)
-                
+            
+            # TODO: Not sure about what to do for components_slice
             if ('components' in data_arrays[dataset]):
                 data_offset = data_offsets.get()
                 components_slice = slice_data(data_arrays[dataset]['components'][0,:], [data_offset[di] + int(math.ceil(input_padding[di] / float(2))) for di in range(0, dims)], output_dims)
